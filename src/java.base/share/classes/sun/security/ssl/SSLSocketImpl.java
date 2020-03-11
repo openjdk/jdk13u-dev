@@ -436,6 +436,8 @@ public final class SSLSocketImpl
                 if (!conContext.isNegotiated) {
                     readHandshakeRecord();
                 }
+            } catch (InterruptedIOException iioe) {
+                handleException(iioe);
             } catch (IOException ioe) {
                 throw conContext.fatal(Alert.HANDSHAKE_FAILURE,
                     "Couldn't kickstart handshaking", ioe);
@@ -1372,12 +1374,11 @@ public final class SSLSocketImpl
                 }
             } catch (SSLException ssle) {
                 throw ssle;
+            } catch (InterruptedIOException iioe) {
+                // don't change exception in case of timeouts or interrupts
+                throw iioe;
             } catch (IOException ioe) {
-                if (!(ioe instanceof SSLException)) {
-                    throw new SSLException("readHandshakeRecord", ioe);
-                } else {
-                    throw ioe;
-                }
+                throw new SSLException("readHandshakeRecord", ioe);
             }
         }
 
@@ -1438,6 +1439,9 @@ public final class SSLSocketImpl
                 }
             } catch (SSLException ssle) {
                 throw ssle;
+            } catch (InterruptedIOException iioe) {
+                // don't change exception in case of timeouts or interrupts
+                throw iioe;
             } catch (IOException ioe) {
                 if (!(ioe instanceof SSLException)) {
                     throw new SSLException("readApplicationRecord", ioe);
