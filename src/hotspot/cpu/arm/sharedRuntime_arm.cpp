@@ -38,6 +38,7 @@
 #include "vmreg_arm.inline.hpp"
 #ifdef COMPILER1
 #include "c1/c1_Runtime1.hpp"
+#include "runtime/safepoint.hpp"
 #endif
 #ifdef COMPILER2
 #include "opto/runtime.hpp"
