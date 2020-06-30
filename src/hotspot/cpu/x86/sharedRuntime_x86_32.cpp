@@ -37,6 +37,7 @@
 #include "runtime/safepointMechanism.hpp"
 #include "runtime/sharedRuntime.hpp"
 #include "runtime/vframeArray.hpp"
+#include "runtime/vm_version.hpp"
 #include "utilities/align.hpp"
 #include "vmreg_x86.inline.hpp"
 #ifdef COMPILER1
@@ -45,7 +46,6 @@
 #ifdef COMPILER2
 #include "opto/runtime.hpp"
 #endif
-#include "vm_version_x86.hpp"
 
 #define __ masm->
 
