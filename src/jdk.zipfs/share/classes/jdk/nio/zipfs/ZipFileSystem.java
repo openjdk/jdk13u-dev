@@ -43,6 +43,8 @@ import java.nio.channels.WritableByteChannel;
 import java.nio.file.*;
 import java.nio.file.attribute.FileAttribute;
 import java.nio.file.attribute.FileTime;
+import java.nio.file.attribute.PosixFileAttributes;
+import java.nio.file.attribute.PosixFileAttributeView;
 import java.nio.file.attribute.UserPrincipalLookupService;
 import java.nio.file.spi.FileSystemProvider;
 import java.security.AccessController;
@@ -1136,7 +1138,8 @@ class ZipFileSystem extends FileSystem {
             int nlen   = CENNAM(cen, pos);
             int elen   = CENEXT(cen, pos);
             int clen   = CENCOM(cen, pos);
-            if ((CENFLG(cen, pos) & 1) != 0) {
+            int flag   = CENFLG(cen, pos);
+            if ((flag & 1) != 0) {
                 throw new ZipException("invalid CEN header (encrypted entry)");
             }
             if (method != METHOD_STORED && method != METHOD_DEFLATED) {
@@ -1147,7 +1150,11 @@ class ZipFileSystem extends FileSystem {
             }
             IndexNode inode = new IndexNode(cen, pos, nlen);
             inodes.put(inode, inode);
-
+            if (zc.isUTF8() || (flag & FLAG_USE_UTF8) != 0) {
+                checkUTF8(inode.name);
+            } else {
+                checkEncoding(inode.name);
+            }
             // skip ext and comment
             pos += (CENHDR + nlen + elen + clen);
         }
@@ -1158,6 +1165,34 @@ class ZipFileSystem extends FileSystem {
         return cen;
     }
 
+    private  final void checkUTF8(byte[] a) throws ZipException {
+        try {
+            int end = a.length;
+            int pos = 0;
+            while (pos < end) {
+                // ASCII fast-path: When checking that a range of bytes is
+                // valid UTF-8, we can avoid some allocation by skipping
+                // past bytes in the 0-127 range
+                if (a[pos] < 0) {
+                    zc.toString(Arrays.copyOfRange(a, pos, a.length));
+                    break;
+                }
+                pos++;
+            }
+        } catch(Exception e) {
+            throw new ZipException("invalid CEN header (bad entry name)");
+        }
+    }
+
+    private final void checkEncoding( byte[] a) throws ZipException {
+        try {
+            zc.toString(a);
+        } catch(Exception e) {
+            throw new ZipException("invalid CEN header (bad entry name)");
+        }
+    }
+
+
     private void ensureOpen() {
         if (!isOpen)
             throw new ClosedFileSystemException();
@@ -1165,9 +1200,7 @@ class ZipFileSystem extends FileSystem {
 
     // Creates a new empty temporary file in the same directory as the
     // specified file.  A variant of Files.createTempFile.
-    private Path createTempFileInSameDirectoryAs(Path path)
-        throws IOException
-    {
+    private Path createTempFileInSameDirectoryAs(Path path) throws IOException {
         Path parent = path.toAbsolutePath().getParent();
         Path dir = (parent == null) ? path.getFileSystem().getPath(".") : parent;
         Path tmpPath = Files.createTempFile(dir, "zipfstmp", null);
@@ -1313,6 +1346,7 @@ class ZipFileSystem extends FileSystem {
         }
         if (!hasUpdate)
             return;
+        PosixFileAttributes attrs = getPosixAttributes(zfpath);
         Path tmpFile = createTempFileInSameDirectoryAs(zfpath);
         try (OutputStream os = new BufferedOutputStream(Files.newOutputStream(tmpFile, WRITE))) {
             ArrayList<Entry> elist = new ArrayList<>(inodes.size());
@@ -1389,8 +1423,36 @@ class ZipFileSystem extends FileSystem {
             Files.delete(zfpath);
         }
 
+        // Set the POSIX permissions of the original Zip File if available
+        // before moving the temp file
+        if (attrs != null) {
+            Files.setPosixFilePermissions(tmpFile, attrs.permissions());
+        }
         Files.move(tmpFile, zfpath, REPLACE_EXISTING);
         hasUpdate = false;    // clear
+    }
+
+    /**
+     * Returns a file's POSIX file attributes.
+     * @param path The path to the file
+     * @return The POSIX file attributes for the specified file or
+     *         null if the POSIX attribute view is not available
+     * @throws IOException If an error occurs obtaining the POSIX attributes for
+     *                    the specified file
+     */
+    private PosixFileAttributes getPosixAttributes(Path path) throws IOException {
+        try {
+            PosixFileAttributeView view =
+                    Files.getFileAttributeView(path, PosixFileAttributeView.class);
+            // Return if the attribute view is not supported
+            if (view == null) {
+                return null;
+            }
+            return view.readAttributes();
+        } catch (UnsupportedOperationException e) {
+            // PosixFileAttributes not available
+            return null;
+        }
     }
 
     IndexNode getInode(byte[] path) {
