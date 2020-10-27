@@ -358,14 +358,14 @@ void mutex_init() {
 #if INCLUDE_JVMTI
   def(CDSClassFileStream_lock      , PaddedMutex  , max_nonleaf, false, Monitor::_safepoint_check_always);
 #endif
+  def(DumpTimeTable_lock           , PaddedMutex  , leaf,        true,  Monitor::_safepoint_check_never);
+#endif // INCLUDE_CDS
 
 #if INCLUDE_JVMCI
   def(JVMCI_lock                   , PaddedMonitor, nonleaf+2,   true,  Monitor::_safepoint_check_always);
   def(JVMCIGlobalAlloc_lock        , PaddedMutex  , nonleaf,     true,  Monitor::_safepoint_check_never);
   def(JVMCIGlobalActive_lock       , PaddedMutex  , nonleaf-1,   true,  Monitor::_safepoint_check_never);
 #endif
-  def(DumpTimeTable_lock           , PaddedMutex  , leaf,        true,  Monitor::_safepoint_check_never);
-#endif // INCLUDE_CDS
 }
 
 GCMutexLocker::GCMutexLocker(Monitor * mutex) {
