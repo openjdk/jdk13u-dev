@@ -695,7 +695,7 @@ void G1Policy::record_collection_pause_end(double pause_time_ms, size_t cards_sc
 
     if (_collection_set->bytes_used_before() > freed_bytes) {
       size_t copied_bytes = _collection_set->bytes_used_before() - freed_bytes;
-      double average_copy_time = average_time_ms(G1GCPhaseTimes::ObjCopy);
+      double average_copy_time = average_time_ms(G1GCPhaseTimes::ObjCopy) + average_time_ms(G1GCPhaseTimes::OptObjCopy);
       double cost_per_byte_ms = average_copy_time / (double) copied_bytes;
       _analytics->report_cost_per_byte_ms(cost_per_byte_ms, collector_state()->mark_or_rebuild_in_progress());
     }
