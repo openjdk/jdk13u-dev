@@ -4636,7 +4636,7 @@ public final class Main {
                     rb.getString("whose.key.risk"),
                     label,
                     String.format(rb.getString("key.bit"),
-                            KeyUtil.getKeySize(key), key.getAlgorithm())));
+                            KeyUtil.getKeySize(key), fullDisplayAlgName(key))));
         }
     }
 
