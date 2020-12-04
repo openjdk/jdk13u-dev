@@ -266,6 +266,7 @@ public class SubSystem {
     public static class MemorySubSystem extends SubSystem {
 
         private boolean hierarchical;
+        private boolean swapenabled;
 
         public MemorySubSystem(String root, String mountPoint) {
             super(root, mountPoint);
@@ -279,5 +280,12 @@ public class SubSystem {
             this.hierarchical = hierarchical;
         }
 
+        boolean isSwapEnabled() {
+            return swapenabled;
+        }
+
+        void setSwapEnabled(boolean swapenabled) {
+            this.swapenabled = swapenabled;
+        }
     }
 }
