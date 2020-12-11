@@ -6065,7 +6065,6 @@ address generate_avx_ghash_processBlocks() {
     if (UseMulAddIntrinsic) {
       StubRoutines::_mulAdd = generate_mulAdd();
     }
-#ifndef _WINDOWS
     if (UseMontgomeryMultiplyIntrinsic) {
       StubRoutines::_montgomeryMultiply
         = CAST_FROM_FN_PTR(address, SharedRuntime::montgomery_multiply);
@@ -6074,7 +6073,6 @@ address generate_avx_ghash_processBlocks() {
       StubRoutines::_montgomerySquare
         = CAST_FROM_FN_PTR(address, SharedRuntime::montgomery_square);
     }
-#endif // WINDOWS
 #endif // COMPILER2
 
     if (UseVectorizedMismatchIntrinsic) {
