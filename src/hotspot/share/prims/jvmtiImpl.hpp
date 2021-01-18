@@ -480,6 +480,10 @@ class JvmtiDeferredEvent {
 
   // Actually posts the event.
   void post() NOT_JVMTI_RETURN;
+  // Sweeper support to keep nmethods from being zombied while in the queue.
+  void nmethods_do(CodeBlobClosure* cf);
+  // GC support to keep nmethod from being unloaded while in the queue.
+  void oops_do(OopClosure* f, CodeBlobClosure* cf);
 };
 
 /**
@@ -499,7 +503,7 @@ class JvmtiDeferredEventQueue : AllStatic {
     QueueNode(const JvmtiDeferredEvent& event)
       : _event(event), _next(NULL) {}
 
-    const JvmtiDeferredEvent& event() const { return _event; }
+    JvmtiDeferredEvent& event() { return _event; }
     QueueNode* next() const { return _next; }
 
     void set_next(QueueNode* next) { _next = next; }
@@ -513,6 +517,10 @@ class JvmtiDeferredEventQueue : AllStatic {
   static bool has_events() NOT_JVMTI_RETURN_(false);
   static void enqueue(const JvmtiDeferredEvent& event) NOT_JVMTI_RETURN;
   static JvmtiDeferredEvent dequeue() NOT_JVMTI_RETURN_(JvmtiDeferredEvent());
+  // Sweeper support to keep nmethods from being zombied while in the queue.
+  static void nmethods_do(CodeBlobClosure* cf);
+  // GC support to keep nmethod from being unloaded while in the queue.
+  static void oops_do(OopClosure* f, CodeBlobClosure* cf);
 };
 
 // Utility macro that checks for NULL pointers:
