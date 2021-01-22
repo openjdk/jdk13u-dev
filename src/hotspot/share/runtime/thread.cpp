@@ -1732,7 +1732,7 @@ void JavaThread::initialize() {
   clear_must_deopt_id();
   set_monitor_chunks(NULL);
   _on_thread_list = false;
-  set_thread_state(_thread_new);
+  _thread_state = _thread_new;
   _terminated = _not_terminated;
   _array_for_gc = NULL;
   _suspend_equivalent = false;
