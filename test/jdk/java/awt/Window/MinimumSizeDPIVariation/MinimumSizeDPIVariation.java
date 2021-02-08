@@ -59,13 +59,18 @@ public final class MinimumSizeDPIVariation {
             System.err.println("comp = " + comp);
             System.err.println("scale = " + scale);
 
-            Dimension minimumSize = switch (comp) {
-                case "frame" -> test(new Frame());
-                case "window" -> test(new Window(null));
-                case "dialog" -> test(new Dialog((Frame) null));
-                default -> throw new java.lang.IllegalStateException(
+            Dimension minimumSize = null;
+            if (comp.equals("frame")) {
+                minimumSize = test(new Frame());
+            } else if (comp.equals("window")) {
+                minimumSize = test(new Window(null));
+            } else if (comp.equals("dialog")) {
+                minimumSize = test(new Dialog((Frame)null));
+            } else {
+                throw new java.lang.IllegalStateException(
                         "Unexpected value: " + comp);
-            };
+            }
+
             check(minimumSize.width, Math.max(w / scale, 1));
             check(minimumSize.height, Math.max(h / scale, 1));
         }
@@ -103,12 +108,12 @@ public final class MinimumSizeDPIVariation {
             throws Exception {
         if (!Platform.isOSX()) {
             for (String dpi : List.of("1.5", "1.75", "2", "2.5")) {
-                runPocess(dpi, comp, w, h);
+                runProcess(dpi, comp, w, h);
             }
         }
     }
 
-    private static void runPocess(String dpi, String comp, int w, int h)
+    private static void runProcess(String dpi, String comp, int w, int h)
             throws Exception {
         ProcessBuilder pb = ProcessTools.createJavaProcessBuilder(
                 "-Dsun.java2d.uiScale=" + dpi,
