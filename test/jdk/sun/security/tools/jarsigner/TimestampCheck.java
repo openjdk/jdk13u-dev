@@ -424,7 +424,7 @@ public class TimestampCheck {
                 sign("tsweak", "-digestalg", "MD5",
                                 "-sigalg", "MD5withRSA", "-tsadigestalg", "MD5")
                         .shouldHaveExitValue(68)
-                        .shouldContain("The timestamp is invalid. Without a valid timestamp")
+                        .shouldContain("TSA certificate chain is invalid")
                         .shouldMatch("MD5.*-digestalg.*risk")
                         .shouldMatch("MD5.*-tsadigestalg.*risk")
                         .shouldMatch("MD5withRSA.*-sigalg.*risk");
@@ -432,7 +432,6 @@ public class TimestampCheck {
 
                 signVerbose("tsweak", "unsigned.jar", "tsweak2.jar", "signer")
                         .shouldHaveExitValue(64)
-                        .shouldContain("The timestamp is invalid. Without a valid timestamp")
                         .shouldContain("TSA certificate chain is invalid");
 
                 // Weak timestamp is an error and jar treated unsigned
@@ -708,7 +707,7 @@ public class TimestampCheck {
                 .shouldMatch("Timestamp signature algorithm: .*key.*weak");
         verify(file, "-J-Djava.security.debug=jar")
                 .shouldHaveExitValue(16)
-                .shouldMatch("SignatureException:.*disabled");
+                .shouldMatch("SignatureException:.*keysize");
 
         // For 8171319: keytool should print out warnings when reading or
         //              generating cert/cert req using weak algorithms.
