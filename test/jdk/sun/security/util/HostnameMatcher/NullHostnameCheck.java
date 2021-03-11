@@ -37,6 +37,8 @@ import java.security.cert.CertificateException;
 import java.security.cert.X509Certificate;
 import java.util.Base64;
 
+import jdk.test.lib.security.SecurityUtils;
+
 /*
  * @test
  * @bug 8211339 8234728
@@ -53,6 +55,12 @@ public final class NullHostnameCheck {
 
     public static void main(String[] args) throws Exception {
         String protocol = args[0];
+
+        // Re-enable TLSv1 or TLSv1.1 when test depends on it.
+        if (protocol.equals("TLSv1") || protocol.equals("TLSv1.1")) {
+            SecurityUtils.removeFromDisabledTlsAlgs(protocol);
+        }
+
         KeyStore keyStore = KeyStore.getInstance(KeyStore.getDefaultType());
         keyStore.load(
                 new ByteArrayInputStream(Base64.getDecoder().
