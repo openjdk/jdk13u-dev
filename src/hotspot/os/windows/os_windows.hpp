@@ -194,6 +194,8 @@ class PlatformMonitor : public CHeapObj<mtSynchronizer> {
   CRITICAL_SECTION   _mutex; // Native mutex for locking
   CONDITION_VARIABLE _cond;  // Native condition variable for blocking
 
+  NONCOPYABLE(PlatformMonitor);
+
  public:
   PlatformMonitor();
   ~PlatformMonitor();

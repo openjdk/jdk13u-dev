@@ -196,9 +196,7 @@ NOT_AIX( private: )
     const Block* _head;
     const Block* _tail;
 
-    // Noncopyable.
-    AllocationList(const AllocationList&);
-    AllocationList& operator=(const AllocationList&);
+    NONCOPYABLE(AllocationList);
 
   public:
     AllocationList();
