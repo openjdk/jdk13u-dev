@@ -286,9 +286,6 @@ class PlatformMonitor : public CHeapObj<mtSynchronizer> {
 
 #endif // PLATFORM_MONITOR_IMPL_INDIRECT
 
- private:
-  NONCOPYABLE(PlatformMonitor);
-
  public:
   void lock();
   void unlock();
