@@ -33,6 +33,7 @@
 #include "gc/shenandoah/shenandoahEvacOOMHandler.hpp"
 #include "gc/shenandoah/shenandoahSharedVariables.hpp"
 #include "services/memoryManager.hpp"
+#include "utilities/globalDefinitions.hpp"
 
 class ConcurrentGCTimer;
 class ReferenceProcessor;
@@ -67,8 +68,7 @@ private:
   DEFINE_PAD_MINUS_SIZE(1, DEFAULT_CACHE_LINE_SIZE, 0);
 
   // No implicit copying: iterators should be passed by reference to capture the state
-  ShenandoahRegionIterator(const ShenandoahRegionIterator& that);
-  ShenandoahRegionIterator& operator=(const ShenandoahRegionIterator& o);
+  NONCOPYABLE(ShenandoahRegionIterator);
 
 public:
   ShenandoahRegionIterator();
