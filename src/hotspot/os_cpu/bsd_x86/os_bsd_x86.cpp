@@ -598,7 +598,13 @@ JVM_handle_bsd_signal(int sig,
 
 #ifdef AMD64
       if (sig == SIGFPE  &&
-          (info->si_code == FPE_INTDIV || info->si_code == FPE_FLTDIV)) {
+          (info->si_code == FPE_INTDIV || info->si_code == FPE_FLTDIV
+           // Workaround for macOS ARM incorrectly reporting FPE_FLTINV for "div by 0"
+           // instead of the expected FPE_FLTDIV when running x86_64 binary under Rosetta emulation
+#ifdef __APPLE__
+           || (VM_Version::is_cpu_emulated() && info->si_code == FPE_FLTINV)
+#endif
+          )) {
         stub =
           SharedRuntime::
           continuation_for_implicit_exception(thread,
