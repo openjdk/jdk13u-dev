@@ -44,10 +44,11 @@ import jdk.test.lib.security.SecurityUtils;
  * @bug 8211339 8234728
  * @summary Verify hostname returns an exception instead of null pointer when
  * creating a new engine
- * @run main NullHostnameCheck TLSv1
- * @run main NullHostnameCheck TLSv1.1
- * @run main NullHostnameCheck TLSv1.2
- * @run main NullHostnameCheck TLSv1.3
+ * @library /test/lib
+ * @run main/othervm NullHostnameCheck TLSv1
+ * @run main/othervm NullHostnameCheck TLSv1.1
+ * @run main/othervm NullHostnameCheck TLSv1.2
+ * @run main/othervm NullHostnameCheck TLSv1.3
  */
 
 
