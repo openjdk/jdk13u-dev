@@ -1833,7 +1833,8 @@ static BOOL ObjectEquals(JNIEnv *env, jobject a, jobject b, jobject component);
     self = [super initWithParent:parent withEnv:env withAccessible:accessible withIndex:index withView:view withJavaRole:javaRole];
     if (self) {
         if (tabGroup != NULL) {
-            fTabGroupAxContext = JNFNewWeakGlobalRef(env, tabGroup);
+            fTabGroupAxContext = (*env)->NewWeakGlobalRef(env, tabGroup);
+            CHECK_EXCEPTION();
         } else {
             fTabGroupAxContext = NULL;
         }
@@ -1846,7 +1847,7 @@ static BOOL ObjectEquals(JNIEnv *env, jobject a, jobject b, jobject component);
     JNIEnv *env = [ThreadUtilities getJNIEnvUncached];
 
     if (fTabGroupAxContext != NULL) {
-        JNFDeleteWeakGlobalRef(env, fTabGroupAxContext);
+        (*env)->DeleteWeakGlobalRef(env, fTabGroupAxContext);
         fTabGroupAxContext = NULL;
     }
 
@@ -1879,7 +1880,8 @@ static BOOL ObjectEquals(JNIEnv *env, jobject a, jobject b, jobject component);
     if (fTabGroupAxContext == NULL) {
         JNIEnv* env = [ThreadUtilities getJNIEnv];
         jobject tabGroupAxContext = [(JavaComponentAccessibility *)[self parent] axContextWithEnv:env];
-        fTabGroupAxContext = JNFNewWeakGlobalRef(env, tabGroupAxContext);
+        fTabGroupAxContext = (*env)->NewWeakGlobalRef(env, tabGroupAxContext);
+        CHECK_EXCEPTION();
         (*env)->DeleteLocalRef(env, tabGroupAxContext);
     }
     return fTabGroupAxContext;
