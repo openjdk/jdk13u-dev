@@ -121,7 +121,7 @@ static BOOL shouldUsePressAndHold() {
     {
         JNIEnv *env = [ThreadUtilities getJNIEnvUncached];
 
-        JNFDeleteGlobalRef(env, fInputMethodLOCKABLE);
+        (*env)->DeleteGlobalRef(env, fInputMethodLOCKABLE);
         fInputMethodLOCKABLE = NULL;
     }
 
@@ -1363,14 +1363,10 @@ static jclass jc_CInputMethod = NULL;
 
     // Get rid of the old one
     if (fInputMethodLOCKABLE) {
-        JNFDeleteGlobalRef(env, fInputMethodLOCKABLE);
+        (*env)->DeleteGlobalRef(env, fInputMethodLOCKABLE);
     }
 
-    // Save a global ref to the new input method.
-    if (inputMethod != NULL)
-        fInputMethodLOCKABLE = JNFNewGlobalRef(env, inputMethod);
-    else
-        fInputMethodLOCKABLE = NULL;
+    fInputMethodLOCKABLE = inputMethod; // input method arg must be a GlobalRef
 
     NSTextInputContext *curContxt = [NSTextInputContext currentInputContext];
     kbdLayout = curContxt.selectedKeyboardInputSource;
@@ -1412,6 +1408,7 @@ Java_sun_lwawt_macosx_CPlatformView_nativeCreateView
 
     NSRect rect = NSMakeRect(originX, originY, width, height);
     jobject cPlatformView = (*env)->NewWeakGlobalRef(env, obj);
+    CHECK_EXCEPTION();
 
     [ThreadUtilities performOnMainThreadWaiting:YES block:^(){
 
