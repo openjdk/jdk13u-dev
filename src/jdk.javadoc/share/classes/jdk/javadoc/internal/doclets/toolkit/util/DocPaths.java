@@ -104,7 +104,7 @@ public class DocPaths {
     public static final DocPath JQUERY_STYLESHEET_FILE = DocPath.create("jquery-ui.css");
 
     /** The name of the default jQuery javascript file. */
-    public static final DocPath JQUERY_JS_3_4 = DocPath.create("jquery-3.4.1.js");
+    public static final DocPath JQUERY_JS_3_4 = DocPath.create("jquery-3.5.1.js");
 
     /** The name of the default jQuery javascript file. */
     public static final DocPath JQUERY_JS = DocPath.create("jquery-ui.js");

@@ -376,7 +376,7 @@ public class TestSearch extends JavadocTester {
                 "<!--[if IE]>\n",
                 "<script type=\"text/javascript\" src=\"script-dir/jszip-utils/dist/jszip-utils-ie.min.js\"></script>\n",
                 "<![endif]-->\n",
-                "<script type=\"text/javascript\" src=\"script-dir/jquery-3.4.1.js\"></script>\n",
+                "<script type=\"text/javascript\" src=\"script-dir/jquery-3.5.1.js\"></script>\n",
                 "<script type=\"text/javascript\" src=\"script-dir/jquery-ui.js\"></script>",
                 "var pathtoroot = \"./\";\n"
                 + "loadScripts(document, 'script');",
@@ -567,7 +567,7 @@ public class TestSearch extends JavadocTester {
     void checkJqueryAndImageFiles(boolean expectedOutput) {
         checkFiles(expectedOutput,
                 "search.js",
-                "script-dir/jquery-3.4.1.js",
+                "script-dir/jquery-3.5.1.js",
                 "script-dir/jquery-ui.js",
                 "script-dir/jquery-ui.css",
                 "script-dir/jquery-ui.min.js",
