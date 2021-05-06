@@ -1099,6 +1099,8 @@ public class AlgorithmId implements Serializable, DerEncoder {
             case "RSA":
                 return ifcFfcStrength(KeyUtil.getKeySize(k))
                     + "withRSA";
+            case "RSASSA-PSS":
+                return "RSASSA-PSS";
             default:
                 return null;
         }
