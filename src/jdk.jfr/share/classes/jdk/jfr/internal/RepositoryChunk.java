@@ -80,7 +80,7 @@ final class RepositoryChunk {
             p = directory.toPath().resolve(extendedName);
         }
         p = directory.toPath().resolve(name + "_" + System.currentTimeMillis() + extension);
-        return SecuritySupport.toRealPath(new SafePath(p));
+        return new SafePath(p);
     }
 
     public SafePath getUnfishedFile() {
