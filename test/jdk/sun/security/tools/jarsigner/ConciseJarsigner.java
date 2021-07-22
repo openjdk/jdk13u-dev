@@ -41,10 +41,10 @@ import java.util.List;
 public class ConciseJarsigner {
 
     static OutputAnalyzer kt(String cmd) throws Exception {
-        // Choose 1024-bit RSA to make sure it runs fine and fast. In
+        // Choose 2048-bit RSA to make sure it runs fine and fast. In
         // fact, every keyalg/keysize combination is OK for this test.
         return SecurityTools.keytool("-storepass changeit -keypass changeit "
-                + "-keystore ks -keyalg rsa -keysize 1024 " + cmd);
+                + "-keystore ks -keyalg rsa -keysize 2048 " + cmd);
     }
 
     static void gencert(String owner, String cmd) throws Exception {
