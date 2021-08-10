@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2015, 2018, Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) 2015, 2020, Oracle and/or its affiliates. All rights reserved.
  * DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS FILE HEADER.
  *
  * This code is free software; you can redistribute it and/or modify it
@@ -89,19 +89,22 @@ final class AlpnExtension {
                     Arrays.asList(applicationProtocols));
         }
 
-        private AlpnSpec(ByteBuffer buffer) throws IOException {
+        private AlpnSpec(HandshakeContext hc,
+                ByteBuffer buffer) throws IOException {
             // ProtocolName protocol_name_list<2..2^16-1>, RFC 7301.
             if (buffer.remaining() < 2) {
-                throw new SSLProtocolException(
+                throw hc.conContext.fatal(Alert.DECODE_ERROR,
+                        new SSLProtocolException(
                     "Invalid application_layer_protocol_negotiation: " +
-                    "insufficient data (length=" + buffer.remaining() + ")");
+                    "insufficient data (length=" + buffer.remaining() + ")"));
             }
 
             int listLen = Record.getInt16(buffer);
             if (listLen < 2 || listLen != buffer.remaining()) {
-                throw new SSLProtocolException(
+                throw hc.conContext.fatal(Alert.DECODE_ERROR,
+                        new SSLProtocolException(
                     "Invalid application_layer_protocol_negotiation: " +
-                    "incorrect list length (length=" + listLen + ")");
+                    "incorrect list length (length=" + listLen + ")"));
             }
 
             List<String> protocolNames = new LinkedList<>();
@@ -109,9 +112,10 @@ final class AlpnExtension {
                 // opaque ProtocolName<1..2^8-1>, RFC 7301.
                 byte[] bytes = Record.getBytes8(buffer);
                 if (bytes.length == 0) {
-                    throw new SSLProtocolException(
+                    throw hc.conContext.fatal(Alert.DECODE_ERROR,
+                            new SSLProtocolException(
                         "Invalid application_layer_protocol_negotiation " +
-                        "extension: empty application protocol name");
+                        "extension: empty application protocol name"));
                 }
 
                 String appProtocol = new String(bytes, alpnCharset);
@@ -130,9 +134,9 @@ final class AlpnExtension {
 
     private static final class AlpnStringizer implements SSLStringizer {
         @Override
-        public String toString(ByteBuffer buffer) {
+        public String toString(HandshakeContext hc, ByteBuffer buffer) {
             try {
-                return (new AlpnSpec(buffer)).toString();
+                return (new AlpnSpec(hc, buffer)).toString();
             } catch (IOException ioe) {
                 // For debug logging only, so please swallow exceptions.
                 return ioe.getMessage();
@@ -301,12 +305,7 @@ final class AlpnExtension {
             }
 
             // Parse the extension.
-            AlpnSpec spec;
-            try {
-                spec = new AlpnSpec(buffer);
-            } catch (IOException ioe) {
-                throw shc.conContext.fatal(Alert.UNEXPECTED_MESSAGE, ioe);
-            }
+            AlpnSpec spec = new AlpnSpec(shc, buffer);
 
             // Update the context.
             if (noAPSelector) {     // noAlpnProtocols is false
@@ -482,12 +481,7 @@ final class AlpnExtension {
             }
 
             // Parse the extension.
-            AlpnSpec spec;
-            try {
-                spec = new AlpnSpec(buffer);
-            } catch (IOException ioe) {
-                throw chc.conContext.fatal(Alert.UNEXPECTED_MESSAGE, ioe);
-            }
+            AlpnSpec spec = new AlpnSpec(chc, buffer);
 
             // Only one application protocol is allowed.
             if (spec.applicationProtocols.size() != 1) {
