@@ -32,6 +32,22 @@
 #include "utilities/concurrentHashTable.inline.hpp"
 #include "utilities/concurrentHashTableTasks.inline.hpp"
 
+class ThreadIdTableEntry;
+
+typedef ConcurrentHashTable<ThreadIdTableEntry*, ThreadIdTableConfig, mtInternal> ThreadIdTableHash;
+
+// 2^24 is max size
+static const size_t END_SIZE = 24;
+// Default initial size 256
+static const size_t DEFAULT_TABLE_SIZE_LOG = 8;
+// Prefer short chains of avg 2
+static const double PREF_AVG_LIST_LEN = 2.0;
+static ThreadIdTableHash* volatile _local_table = NULL;
+static volatile size_t _current_size = 0;
+static volatile size_t _items_count = 0;
+
+volatile bool ThreadIdTable::_is_initialized = false;
+
 class ThreadIdTableEntry : public CHeapObj<mtInternal> {
 private:
   jlong _tid;
@@ -62,20 +78,6 @@ class ThreadIdTableConfig : public AllStatic {
       ThreadIdTable::item_removed();
     }
 };
-
-typedef ConcurrentHashTable<ThreadIdTableConfig::Value, ThreadIdTableConfig, mtInternal> ThreadIdTableHash;
-
-// 2^24 is max size
-static const size_t END_SIZE = 24;
-// Default initial size 256
-static const size_t DEFAULT_TABLE_SIZE_LOG = 8;
-// Prefer short chains of avg 2
-static const double PREF_AVG_LIST_LEN = 2.0;
-static ThreadIdTableHash* volatile _local_table = NULL;
-static volatile size_t _current_size = 0;
-static volatile size_t _items_count = 0;
-
-volatile bool ThreadIdTable::_is_initialized = false;
 
 static size_t ceil_log2(size_t val) {
   size_t ret;
