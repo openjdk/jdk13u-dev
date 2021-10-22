@@ -2880,7 +2880,12 @@ void AdapterHandlerLibrary::create_native_wrapper(const methodHandle& method) {
       struct { double data[20]; } locs_buf;
       buffer.insts()->initialize_shared_locs((relocInfo*)&locs_buf, sizeof(locs_buf) / sizeof(relocInfo));
       MacroAssembler _masm(&buffer);
-
+#if defined(AARCH64)
+      // On AArch64 with ZGC and nmethod entry barriers, we need all oops to be
+      // in the constant pool to ensure ordering between the barrier and oops
+      // accesses. For native_wrappers we need a constant.
+      buffer.initialize_consts_size(8);
+#endif
       // Fill in the signature array, for the calling-convention call.
       const int total_args_passed = method->size_of_parameters();
 

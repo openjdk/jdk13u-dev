@@ -2464,7 +2464,11 @@ const size_t minimumSymbolTableSize = 1024;
           "Start flight recording with options"))                           \
                                                                             \
   experimental(bool, UseFastUnorderedTimeStamps, false,                     \
-          "Use platform unstable time where supported for timestamps only")
+          "Use platform unstable time where supported for timestamps only") \
+                                                                            \
+  diagnostic(bool, DeoptimizeNMethodBarriersALot, false,                    \
+                "Make nmethod barriers deoptimise a lot.")                  \
+
 
 // Interface macros
 #define DECLARE_PRODUCT_FLAG(type, name, value, doc)      extern "C" type name;
