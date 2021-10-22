@@ -42,11 +42,11 @@ class NativeNMethodBarrier: public NativeInstruction {
 
 public:
   int get_value() {
-    return Atomic::load_acquire(guard_addr());
+    return OrderAccess::load_acquire(guard_addr());
   }
 
   void set_value(int value) {
-    Atomic::release_store(guard_addr(), value);
+    OrderAccess::release_store(guard_addr(), value);
   }
 
   void verify() const;

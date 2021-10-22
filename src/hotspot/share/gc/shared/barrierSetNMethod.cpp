@@ -69,7 +69,7 @@ int BarrierSetNMethod::nmethod_stub_entry_barrier(address* return_address_ptr) {
   // a very rare event.
   if (DeoptimizeNMethodBarriersALot) {
     static volatile uint32_t counter=0;
-    if (Atomic::add(&counter, 1u) % 3 == 0) {
+    if (Atomic::add(1u, &counter) % 3 == 0) {
       may_enter = false;
     }
   }
