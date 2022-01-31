@@ -21,7 +21,6 @@
  * questions.
  */
 
-import jdk.test.lib.hexdump.HexPrinter;
 
 import java.io.ByteArrayOutputStream;
 import java.util.logging.*;
@@ -51,7 +50,6 @@ public class LogParameters {
         String s = new String(data);
         if (!s.contains("LogParameters main")
                 || !s.contains("FINE: I have 10 apples.")) {
-            HexPrinter.simple().format(data);
             throw new RuntimeException("Unexpected log output: " + s);
         }
     }
