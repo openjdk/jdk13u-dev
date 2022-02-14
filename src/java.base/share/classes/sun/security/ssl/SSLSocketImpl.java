@@ -1759,14 +1759,16 @@ public final class SSLSocketImpl
                         // Change read timeout to avoid deadlock.
                         // This workaround could be replaced later
                         // with the right synchronization
-                        if (soTimeout == 0)
+                        if (soTimeout == 0) {
                             setSoTimeout(DEFAULT_SKIP_TIMEOUT);
+                        }
                         ((SSLSocketInputRecord) (conContext.inputRecord)).deplete(false);
                     } catch (java.net.SocketTimeoutException stEx) {
                         // skip timeout exception during deplete
                     } finally {
-                        if (soTimeout == 0)
+                        if (soTimeout == 0) {
                             setSoTimeout(soTimeout);
+                        }
                         appInput.readLock.unlock();
                     }
                 }
