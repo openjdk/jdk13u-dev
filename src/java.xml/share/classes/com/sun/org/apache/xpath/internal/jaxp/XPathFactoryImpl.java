@@ -306,7 +306,6 @@ public  class XPathFactoryImpl extends XPathFactory {
                 xPathVariableResolver = resolver;
         }
 
-    @Override
     public void setProperty(String name, String value) {
         // property name cannot be null
         if (name == null) {
@@ -323,7 +322,6 @@ public  class XPathFactoryImpl extends XPathFactory {
         throw new IllegalArgumentException(fmsg);
     }
 
-    @Override
     public String getProperty(String name) {
         // property name cannot be null
         if (name == null) {
