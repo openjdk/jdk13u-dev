@@ -145,11 +145,14 @@ class ZipOutputStream extends DeflaterOutputStream implements ZipConstants {
      *            ZIP file comment is greater than 0xFFFF bytes
      */
     public void setComment(String comment) {
+        byte[] bytes = null;
         if (comment != null) {
-            this.comment = zc.getBytes(comment);
-            if (this.comment.length > 0xffff)
-                throw new IllegalArgumentException("ZIP file comment too long.");
+            bytes = zc.getBytes(comment);
+            if (bytes.length > 0xffff) {
+                throw new IllegalArgumentException("ZIP file comment too long");
+            }
         }
+        this.comment = bytes;
     }
 
     /**
