@@ -86,6 +86,7 @@ else
   BUILD_JDK_JTREG_EXCLUDE += libTestMainKeyWindow.m
   BUILD_JDK_JTREG_EXCLUDE += exeJniInvocationTest.c
   BUILD_JDK_JTREG_EXCLUDE += libTestDynamicStore.m
+  BUILD_JDK_JTREG_EXCLUDE += exeLibraryCache.c
 endif
 
 ifeq ($(call isTargetOs, linux), true)
