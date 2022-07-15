@@ -354,7 +354,8 @@ public abstract class AbstractDelegateHttpsURLConnection extends
         HttpsClient https = (HttpsClient)http;
         try {
             Certificate[] certs = https.getServerCertificates();
-            if (certs[0] instanceof X509Certificate x509Cert) {
+            if (certs[0] instanceof X509Certificate) {
+                X509Certificate x509Cert = (X509Certificate)certs[0];
                 return new HttpCallerInfo(url, proxy, port, x509Cert, authenticator);
             }
         } catch (SSLPeerUnverifiedException e) {
@@ -372,7 +373,8 @@ public abstract class AbstractDelegateHttpsURLConnection extends
         HttpsClient https = (HttpsClient)http;
         try {
             Certificate[] certs = https.getServerCertificates();
-            if (certs[0] instanceof X509Certificate x509Cert) {
+            if (certs[0] instanceof X509Certificate) {
+                X509Certificate x509Cert = (X509Certificate)certs[0];
                 return new HttpCallerInfo(url, x509Cert, authenticator);
             }
         } catch (SSLPeerUnverifiedException e) {
