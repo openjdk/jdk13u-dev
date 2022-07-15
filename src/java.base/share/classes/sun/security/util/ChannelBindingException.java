@@ -32,7 +32,6 @@ import java.security.GeneralSecurityException;
  */
 public class ChannelBindingException extends GeneralSecurityException {
 
-    @java.io.Serial
     private static final long serialVersionUID = -5021387249782788460L;
 
     /**
