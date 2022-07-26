@@ -212,11 +212,11 @@ public final class CFont extends PhysicalFont implements FontSubstitution {
         fonts[0] = this;
         int idx = 1;
         if (FontUtilities.isLogging()) {
-            FontUtilities.logInfo("Cascading list for " + this + " :");
+            FontUtilities.getLogger().info("Cascading list for " + this + " :");
         }
         for (String s : listOfString) {
             if (FontUtilities.isLogging()) {
-                FontUtilities.logInfo("Fallback:" + s);
+                FontUtilities.getLogger().info("Fallback:" + s);
             }
             if (s.equals(".AppleSymbolsFB"))  {
                 // Don't know why we get the weird name above .. replace.
