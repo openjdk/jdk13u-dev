@@ -450,7 +450,7 @@ public class TimestampCheck {
                         .shouldHaveExitValue(16)
                         .shouldContain("treated as unsigned")
                         .shouldMatch("Digest.*SHA-1.*(disabled)");
- 
+
                 sign("sha1tsaalg", "-tsadigestalg", "SHA-1", "-strict")
                         .shouldHaveExitValue(4)
                         .shouldContain("jar signed")
