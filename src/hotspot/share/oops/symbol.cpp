@@ -52,9 +52,7 @@ uint32_t Symbol::pack_length_and_refcount(int length, int refcount) {
 Symbol::Symbol(const u1* name, int length, int refcount) {
   _length_and_refcount =  pack_length_and_refcount(length, refcount);
   _identity_hash = (short)os::random();
-  for (int i = 0; i < length; i++) {
-    byte_at_put(i, name[i]);
-  }
+  memcpy(_body, name, length);
 }
 
 void* Symbol::operator new(size_t sz, int len) throw() {
