@@ -565,7 +565,8 @@ public class Main {
     }
 
     static char[] getPass(String modifier, String arg) {
-        char[] output = KeyStoreUtil.getPassWithModifier(modifier, arg, rb);
+        char[] output =
+            KeyStoreUtil.getPassWithModifier(modifier, arg, rb, collator);
         if (output != null) return output;
         usage();
         return null;    // Useless, usage() already exit
