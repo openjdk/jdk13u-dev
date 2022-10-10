@@ -4812,7 +4812,8 @@ public final class Main {
     }
 
     private char[] getPass(String modifier, String arg) {
-        char[] output = KeyStoreUtil.getPassWithModifier(modifier, arg, rb);
+        char[] output =
+            KeyStoreUtil.getPassWithModifier(modifier, arg, rb, collator);
         if (output != null) return output;
         tinyHelp();
         return null;    // Useless, tinyHelp() already exits.
