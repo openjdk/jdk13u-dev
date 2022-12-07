@@ -386,9 +386,11 @@ JVM_handle_solaris_signal(int sig, siginfo_t* info, void* ucVoid,
     npc = (address) uc->uc_mcontext.gregs[REG_nPC];
 
     // SafeFetch() support
-    if (StubRoutines::is_safefetch_fault(pc)) {
-      os::Solaris::ucontext_set_pc(uc, StubRoutines::continuation_for_safefetch_fault(pc));
-      return 1;
+    if (sig == SIGSEGV || sig == SIGBUS) {
+      if (pc && StubRoutines::is_safefetch_fault(pc)) {
+        os::Solaris::ucontext_set_pc(uc, StubRoutines::continuation_for_safefetch_fault(pc));
+        return 1;
+      }
     }
 
     // Handle ALL stack overflow variations here

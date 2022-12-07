@@ -543,7 +543,7 @@ JVM_handle_linux_signal(int sig,
     pc = address(SIG_PC(uc));
     npc = address(SIG_NPC(uc));
 
-    if (checkPrefetch(uc, pc)) {
+    if ((sig == SIGSEGV || sig == SIGBUS) && checkPrefetch(uc, pc)) {
       return 1;
     }
 
